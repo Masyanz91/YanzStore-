@@ -1,0 +1,1942 @@
+```html
+<!DOCTYPE html>
+<html lang="id" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YanzStore - Game Top Up Portal & Premium Seller</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Orbitron & Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Orbitron:wght@500;700;900&display=swap" rel="stylesheet">
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        orbitron: ['Orbitron', 'sans-serif'],
+                    },
+                    boxShadow: {
+                        'neon-blue': '0 0 15px rgba(34, 211, 238, 0.4)',
+                        'neon-blue-lg': '0 0 25px rgba(34, 211, 238, 0.6)',
+                        'neon-pink': '0 0 15px rgba(236, 72, 153, 0.4)',
+                        'neon-green': '0 0 15px rgba(16, 185, 129, 0.4)',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom Glowing Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #020617;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #06b6d4;
+            border-radius: 4px;
+            box-shadow: 0 0 10px #06b6d4;
+        }
+        
+        /* Neon text pulse */
+        .neon-pulse {
+            animation: pulse 2s infinite alternate;
+        }
+        @keyframes pulse {
+            0% { text-shadow: 0 0 5px #06b6d4, 0 0 10px #06b6d4; }
+            100% { text-shadow: 0 0 15px #06b6d4, 0 0 30px #06b6d4, 0 0 45px #0891b2; }
+        }
+
+        /* Toast Animations */
+        @keyframes slideIn {
+            from { transform: translateX(120%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        @keyframes fadeOut {
+            from { opacity: 1; transform: translateY(0); }
+            to { opacity: 0; transform: translateY(-20px); }
+        }
+        .toast-enter {
+            animation: slideIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        .toast-exit {
+            animation: fadeOut 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        /* Toast Timer progress bar animation */
+        @keyframes shrinkWidth {
+            from { width: 100%; }
+            to { width: 0%; }
+        }
+        .toast-timer {
+            animation: shrinkWidth 4s linear forwards;
+        }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-100 font-sans min-h-screen flex flex-col selection:bg-cyan-500 selection:text-slate-950">
+
+    <!-- FLOATING TOAST CONTAINER -->
+    <div id="toast-container" class="fixed top-24 right-4 z-50 space-y-3 pointer-events-none w-full max-w-sm px-4">
+        <!-- Toast elements dynamically injected here -->
+    </div>
+
+    <!-- HEADER / NAVIGATION -->
+    <header class="sticky top-0 z-40 bg-slate-950/80 backdrop-blur-md border-b border-cyan-500/30 shadow-neon-blue/10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            <!-- Logo YanzStore -->
+            <button onclick="switchView('home')" class="flex items-center space-x-3 text-left">
+                <div class="w-10 h-10 rounded-lg bg-cyan-950 border border-cyan-400 flex items-center justify-center shadow-neon-blue">
+                    <i class="fa-solid fa-gamepad text-cyan-400 text-xl"></i>
+                </div>
+                <span class="font-orbitron text-2xl font-black tracking-wider bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
+                    YANZ<span class="text-cyan-400 neon-pulse">STORE</span>
+                </span>
+            </button>
+
+            <!-- Navigation Links -->
+            <div class="hidden md:flex items-center space-x-6">
+                <button onclick="switchView('home')" class="text-xs uppercase font-orbitron tracking-widest text-slate-300 hover:text-cyan-400 transition">Beranda</button>
+                <a href="#cara-order" class="text-xs uppercase font-orbitron tracking-widest text-slate-300 hover:text-cyan-400 transition">Cara Beli</a>
+                <button onclick="openCSWhatsApp()" class="text-xs uppercase font-orbitron tracking-widest text-emerald-400 hover:text-emerald-300 transition flex items-center gap-1">
+                    <i class="fa-brands fa-whatsapp text-sm"></i> WhatsApp CS
+                </button>
+            </div>
+
+            <!-- Header Auth Actions -->
+            <div class="flex items-center space-x-3" id="headerAuthSection">
+                <!-- Dynamically populated via JS -->
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN VIEWS CONTAINER -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+        <!-- ================= HOME VIEW ================= -->
+        <div id="view-home" class="space-y-12">
+            <!-- HERO / BANNER DYNAMIC PROMO ADVERTISEMENT -->
+            <section class="relative overflow-hidden rounded-3xl border border-cyan-500/30 bg-gradient-to-br from-slate-900 via-slate-950 to-cyan-950/40 p-8 sm:p-12 shadow-neon-blue/10">
+                <div class="absolute -top-12 -right-12 w-64 h-64 bg-cyan-500/10 rounded-full blur-3xl"></div>
+                <div class="absolute -bottom-12 -left-12 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl"></div>
+                
+                <div class="relative z-10 flex flex-col md:flex-row items-center justify-between gap-8">
+                    <div class="max-w-xl space-y-4 text-center md:text-left">
+                        <span class="px-3 py-1 rounded-full text-xs font-semibold bg-cyan-950 border border-cyan-400 text-cyan-400 tracking-wider uppercase font-orbitron">
+                            PORTAL TOP UP TERBESAR
+                        </span>
+                        <h1 class="font-orbitron text-3xl sm:text-4xl md:text-5xl font-black tracking-tight leading-none text-slate-100">
+                            Pusat Game Top Up <br>
+                            <span class="text-transparent bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text neon-pulse" id="homeMainPromoTitle">YanzStore Premium</span>
+                        </h1>
+                        <p class="text-slate-400 text-sm sm:text-base">
+                            Nikmati kemudahan berbelanja item game terpopuler dengan harga bersaing, proses super cepat langsung terhubung ke akun WhatsApp kami!
+                        </p>
+                        <div class="flex flex-wrap gap-4 justify-center md:justify-start pt-2">
+                            <div class="flex items-center gap-2 bg-slate-900/80 border border-cyan-500/20 rounded-lg p-2.5 px-4 text-xs">
+                                <i class="fa-solid fa-shield-halved text-cyan-400"></i>
+                                <span>Aman, Cepat & Legal</span>
+                            </div>
+                            <div class="flex items-center gap-2 bg-slate-900/80 border border-cyan-500/20 rounded-lg p-2.5 px-4 text-xs">
+                                <i class="fa-solid fa-tags text-pink-400"></i>
+                                <span>Promo Diskon Melimpah</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Dynamic Ad Carousel Space -->
+                    <div class="w-full max-w-sm">
+                        <div class="aspect-video rounded-2xl bg-slate-900 border border-cyan-500/30 relative overflow-hidden group shadow-neon-blue/20">
+                            <img id="promoBannerImg" src="" alt="YanzStore Promo" class="object-cover w-full h-full transition duration-500">
+                            <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/20 to-transparent flex flex-col justify-end p-6">
+                                <h3 class="font-orbitron font-bold text-lg text-cyan-400 leading-tight" id="promoAdTitle">Memuat Promo...</h3>
+                                <p class="text-xs text-slate-300" id="promoAdDesc">Silakan tunggu penawaran khusus terbaik.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SEARCH & GAME CATALOG -->
+            <section id="gameSelection" class="space-y-6">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-cyan-500/20 pb-4">
+                    <h2 class="font-orbitron text-xl sm:text-2xl font-black tracking-widest text-slate-100 flex items-center gap-3">
+                        <span class="w-3 h-6 bg-cyan-400 inline-block shadow-neon-blue"></span>
+                        DAFTAR GAME POPULER
+                    </h2>
+                    
+                    <!-- Search input -->
+                    <div class="relative w-full sm:max-w-xs">
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-cyan-400/50">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                        </span>
+                        <input type="text" id="gameSearch" oninput="searchGames(this.value)" class="w-full pl-10 pr-4 py-2 bg-slate-900 border border-cyan-500/30 rounded-full focus:outline-none focus:border-cyan-400 focus:shadow-neon-blue transition duration-300 text-xs text-slate-100 placeholder-slate-500" placeholder="Cari game...">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6" id="gamesGrid">
+                    <!-- Dynamic -->
+                </div>
+            </section>
+
+            <!-- CARA ORDER SECTION -->
+            <section id="cara-order" class="border-t border-cyan-500/10 pt-12">
+                <h2 class="font-orbitron text-xl sm:text-2xl font-black tracking-widest text-slate-100 text-center mb-12">
+                    CARA MUDAH TOP UP DI <span class="text-cyan-400">YANZSTORE</span>
+                </h2>
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                    <div class="bg-slate-900 border border-cyan-500/20 p-6 rounded-2xl relative">
+                        <div class="absolute -top-4 -left-4 w-10 h-10 rounded-xl bg-cyan-950 border border-cyan-500 flex items-center justify-center font-orbitron text-cyan-400 font-bold shadow-neon-blue">1</div>
+                        <h3 class="font-orbitron font-bold text-base text-cyan-400 mb-2 mt-2">Masuk / Daftar</h3>
+                        <p class="text-xs text-slate-400 leading-relaxed">Masuk ke akun Anda atau daftarkan akun baru agar riwayat transaksi terekam aman.</p>
+                    </div>
+                    <div class="bg-slate-900 border border-cyan-500/20 p-6 rounded-2xl relative">
+                        <div class="absolute -top-4 -left-4 w-10 h-10 rounded-xl bg-cyan-950 border border-cyan-500 flex items-center justify-center font-orbitron text-cyan-400 font-bold shadow-neon-blue">2</div>
+                        <h3 class="font-orbitron font-bold text-base text-cyan-400 mb-2 mt-2">Isi Data Game</h3>
+                        <p class="text-xs text-slate-400 leading-relaxed">Pilih game favorit, masukkan User ID, Server ID, serta tentukan nominal top-up pilihan.</p>
+                    </div>
+                    <div class="bg-slate-900 border border-cyan-500/20 p-6 rounded-2xl relative">
+                        <div class="absolute -top-4 -left-4 w-10 h-10 rounded-xl bg-cyan-950 border border-cyan-500 flex items-center justify-center font-orbitron text-cyan-400 font-bold shadow-neon-blue">3</div>
+                        <h3 class="font-orbitron font-bold text-base text-cyan-400 mb-2 mt-2">Kirim Rincian WA</h3>
+                        <p class="text-xs text-slate-400 leading-relaxed">Tekan tombol bayar untuk otomatis mengalihkan data pesanan langsung menuju WhatsApp Admin.</p>
+                    </div>
+                    <div class="bg-slate-900 border border-cyan-500/20 p-6 rounded-2xl relative">
+                        <div class="absolute -top-4 -left-4 w-10 h-10 rounded-xl bg-cyan-950 border border-cyan-500 flex items-center justify-center font-orbitron text-cyan-400 font-bold shadow-neon-blue">4</div>
+                        <h3 class="font-orbitron font-bold text-base text-cyan-400 mb-2 mt-2">Selesai</h3>
+                        <p class="text-xs text-slate-400 leading-relaxed">Lakukan transfer mengikuti intruksi Admin WA. Pesanan akan segera masuk secara otomatis.</p>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- ================= PURCHASE VIEW ================= -->
+        <div id="view-purchase" class="hidden space-y-8 scroll-mt-24">
+            <button onclick="switchView('home')" class="inline-flex items-center gap-2 text-cyan-400 hover:text-cyan-300 font-orbitron text-xs tracking-widest font-bold">
+                <i class="fa-solid fa-arrow-left"></i> KEMBALI KE BERANDA
+            </button>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                <!-- Left Details Card -->
+                <div class="lg:col-span-4 space-y-6">
+                    <div class="bg-slate-900 border border-cyan-500/30 rounded-3xl p-6 shadow-neon-blue/5 sticky top-24">
+                        <div class="relative aspect-[4/3] rounded-2xl overflow-hidden mb-6 border border-cyan-500/20">
+                            <img id="selectedGameBanner" src="" alt="Banner Game" class="w-full h-full object-cover">
+                            <div class="absolute inset-0 bg-gradient-to-t from-slate-950 to-transparent"></div>
+                        </div>
+                        <div class="space-y-3">
+                            <h3 id="selectedGameName" class="font-orbitron text-2xl font-black text-cyan-400 tracking-wide">Nama Game</h3>
+                            <p id="selectedGameDeveloper" class="text-xs text-slate-400 font-semibold tracking-wider uppercase">DEVELOPER</p>
+                            <div class="h-px bg-cyan-500/20 my-4"></div>
+                            <p class="text-xs text-slate-300 leading-relaxed">
+                                Mohon isi User ID & Server ID Anda dengan benar. Pembayaran & verifikasi pesanan diproses cepat oleh Admin WhatsApp YanzStore.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Purchase Steps -->
+                <div class="lg:col-span-8 space-y-6">
+                    <!-- Step 1 Data Akun -->
+                    <div class="bg-slate-900 border border-cyan-500/30 rounded-3xl p-6 relative overflow-hidden">
+                        <div class="absolute top-0 right-0 px-6 py-2 bg-cyan-950 border-l border-b border-cyan-500/30 rounded-bl-2xl text-cyan-400 font-orbitron font-bold text-xs">LANGKAH 1</div>
+                        <div class="flex items-center gap-3 mb-6">
+                            <div class="w-8 h-8 rounded-full bg-cyan-950 border border-cyan-400 flex items-center justify-center font-orbitron font-bold text-cyan-400 shadow-neon-blue text-xs">01</div>
+                            <h4 class="font-orbitron font-bold text-base text-slate-100">Masukkan Data Akun</h4>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">User ID Game</label>
+                                <input type="text" id="inputUserId" placeholder="Masukkan User ID" class="w-full px-4 py-3 bg-slate-950 border border-cyan-500/30 rounded-xl focus:outline-none focus:border-cyan-400 focus:shadow-neon-blue text-sm">
+                            </div>
+                            <div id="zoneIdContainer">
+                                <label id="zoneIdLabel" class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">Zone ID / Server</label>
+                                <input type="text" id="inputZoneId" placeholder="Contoh: 1234" class="w-full px-4 py-3 bg-slate-950 border border-cyan-500/30 rounded-xl focus:outline-none focus:border-cyan-400 focus:shadow-neon-blue text-sm">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 2 Nominal with potential Discount visualization -->
+                    <div class="bg-slate-900 border border-cyan-500/30 rounded-3xl p-6 relative overflow-hidden">
+                        <div class="absolute top-0 right-0 px-6 py-2 bg-cyan-950 border-l border-b border-cyan-500/30 rounded-bl-2xl text-cyan-400 font-orbitron font-bold text-xs">LANGKAH 2</div>
+                        <div class="flex items-center gap-3 mb-6">
+                            <div class="w-8 h-8 rounded-full bg-cyan-950 border border-cyan-400 flex items-center justify-center font-orbitron font-bold text-cyan-400 shadow-neon-blue text-xs">02</div>
+                            <h4 class="font-orbitron font-bold text-base text-slate-100">Pilih Nominal Pembelian</h4>
+                        </div>
+                        <div class="grid grid-cols-2 sm:grid-cols-3 gap-4" id="nominalGrid">
+                            <!-- Dynamic depending on game -->
+                        </div>
+                    </div>
+
+                    <!-- Step 3 Checkout WA -->
+                    <div class="bg-slate-900 border border-cyan-500/30 rounded-3xl p-6 relative overflow-hidden">
+                        <div class="absolute top-0 right-0 px-6 py-2 bg-cyan-950 border-l border-b border-cyan-500/30 rounded-bl-2xl text-cyan-400 font-orbitron font-bold text-xs">LANGKAH 3</div>
+                        <div class="flex items-center gap-3 mb-6">
+                            <div class="w-8 h-8 rounded-full bg-cyan-950 border border-cyan-400 flex items-center justify-center font-orbitron font-bold text-cyan-400 shadow-neon-blue text-xs">03</div>
+                            <h4 class="font-orbitron font-bold text-base text-slate-100">Selesaikan Pembayaran via WA</h4>
+                        </div>
+                        
+                        <div class="bg-slate-950 border border-cyan-500/20 rounded-2xl p-5 space-y-4 mb-6">
+                            <div class="flex justify-between items-center text-xs">
+                                <span class="text-slate-400">Game Terpilih:</span>
+                                <span id="summaryGame" class="font-bold text-slate-100">-</span>
+                            </div>
+                            <div class="flex justify-between items-center text-xs">
+                                <span class="text-slate-400">User ID & Server:</span>
+                                <span id="summaryId" class="font-bold text-cyan-400">-</span>
+                            </div>
+                            <div class="flex justify-between items-center text-xs">
+                                <span class="text-slate-400">Item Dipilih:</span>
+                                <span id="summaryItem" class="font-bold text-slate-100">-</span>
+                            </div>
+                            <div class="h-px bg-cyan-500/20"></div>
+                            <div class="flex justify-between items-center">
+                                <span class="font-orbitron font-bold text-slate-300 text-sm">Total Pembayaran:</span>
+                                <span id="summaryPrice" class="font-orbitron font-black text-lg text-cyan-400">-</span>
+                            </div>
+                        </div>
+
+                        <button onclick="triggerCheckout()" class="w-full py-4 rounded-2xl bg-gradient-to-r from-cyan-400 to-blue-600 hover:from-cyan-300 hover:to-blue-500 text-slate-950 font-black font-orbitron tracking-widest text-xs transition duration-300 hover:scale-[1.01] shadow-neon-blue-lg flex items-center justify-center gap-3">
+                            <i class="fa-solid fa-cart-shopping text-base"></i> BAYAR SEKARANG VIA WHATSAPP
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= DASHBOARD USER VIEW ================= -->
+        <div id="view-dashboard-user" class="hidden space-y-8">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-cyan-500/20 pb-6">
+                <div>
+                    <h2 class="font-orbitron text-2xl font-black text-cyan-400">DASBOR PELANGGAN</h2>
+                    <p class="text-xs text-slate-400">Pantau seluruh riwayat transaksi top up dan perbarui pengaturan profil Anda di sini.</p>
+                </div>
+                <div class="bg-slate-900 border border-cyan-500/20 p-4 rounded-2xl flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full bg-cyan-950 flex items-center justify-center border border-cyan-500 text-cyan-400">
+                        <i class="fa-solid fa-user"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-sm" id="userDashName">Username</h4>
+                        <span class="text-[10px] bg-cyan-950 text-cyan-400 border border-cyan-500/30 px-2 py-0.5 rounded font-orbitron">MEMBER</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TABS MENU USER -->
+            <div class="flex border-b border-cyan-500/10 gap-2">
+                <button onclick="switchUserTab('orders')" id="btn-user-orders" class="px-5 py-3 border-b-2 border-cyan-400 text-cyan-400 text-xs font-orbitron font-bold uppercase tracking-wider">Riwayat Transaksi</button>
+                <button onclick="switchUserTab('profile')" id="btn-user-profile" class="px-5 py-3 border-b-2 border-transparent text-slate-400 hover:text-slate-100 text-xs font-orbitron font-bold uppercase tracking-wider">Pengaturan Profil</button>
+            </div>
+
+            <!-- TAB: USER ORDERS HISTORY -->
+            <div id="user-tab-orders-content" class="bg-slate-900 border border-cyan-500/20 rounded-3xl p-6">
+                <h3 class="font-orbitron font-bold text-sm text-slate-100 mb-4 flex items-center gap-2">
+                    <i class="fa-solid fa-clock-rotate-left text-cyan-400"></i> Riwayat Transaksi Anda
+                </h3>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse text-xs">
+                        <thead>
+                            <tr class="border-b border-cyan-500/10 text-slate-400 uppercase font-semibold">
+                                <th class="py-3 px-4">ID Transaksi</th>
+                                <th class="py-3 px-4">Tanggal</th>
+                                <th class="py-3 px-4">Game</th>
+                                <th class="py-3 px-4">Item</th>
+                                <th class="py-3 px-4">ID & Server</th>
+                                <th class="py-3 px-4">Harga</th>
+                                <th class="py-3 px-4 text-center">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="userOrdersTable">
+                            <!-- Dynamic -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- TAB: EDIT PROFILE & EMAIL -->
+            <div id="user-tab-profile-content" class="hidden bg-slate-900 border border-cyan-500/20 rounded-3xl p-6 sm:p-8">
+                <div class="max-w-xl space-y-6">
+                    <div>
+                        <h3 class="font-orbitron font-bold text-sm text-cyan-400 uppercase tracking-wider mb-2">Edit Informasi Akun</h3>
+                        <p class="text-xs text-slate-400 mb-6">Ubah nama profil lengkap, email terhubung, serta kelola keamanan kata sandi baru.</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">Username (Tidak dapat diubah)</label>
+                            <input type="text" id="editUsername" disabled class="w-full px-4 py-3 bg-slate-950/60 border border-slate-800 rounded-xl text-slate-500 text-xs cursor-not-allowed">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">Nama Lengkap</label>
+                            <input type="text" id="editFullName" placeholder="Masukkan nama baru" class="w-full px-4 py-3 bg-slate-950 border border-cyan-500/20 rounded-xl focus:outline-none focus:border-cyan-400 text-xs">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">Alamat Email</label>
+                        <input type="email" id="editEmail" placeholder="contoh@domain.com" class="w-full px-4 py-3 bg-slate-950 border border-cyan-500/20 rounded-xl focus:outline-none focus:border-cyan-400 text-xs">
+                    </div>
+
+                    <div class="h-px bg-cyan-500/10 my-6"></div>
+
+                    <div>
+                        <h3 class="font-orbitron font-bold text-xs text-slate-300 uppercase tracking-wider mb-3"><i class="fa-solid fa-lock text-xs text-cyan-400"></i> Ganti Kata Sandi (Opsional)</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">Kata Sandi Baru</label>
+                                <input type="password" id="editNewPassword" placeholder="Ketik sandi baru jika ingin diubah" class="w-full px-4 py-3 bg-slate-950 border border-cyan-500/20 rounded-xl focus:outline-none focus:border-cyan-400 text-xs">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">Konfirmasi Kata Sandi</label>
+                                <input type="password" id="editConfirmPassword" placeholder="Ulangi sandi baru" class="w-full px-4 py-3 bg-slate-950 border border-cyan-500/20 rounded-xl focus:outline-none focus:border-cyan-400 text-xs">
+                            </div>
+                        </div>
+                    </div>
+
+                    <button onclick="saveUserProfile()" class="py-3 px-6 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-black font-orbitron text-xs tracking-wider transition duration-300 shadow-neon-blue flex items-center gap-2">
+                        <i class="fa-solid fa-floppy-disk"></i> SIMPAN PERUBAHAN PROFIL
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= DASHBOARD ADMIN VIEW ================= -->
+        <div id="view-dashboard-admin" class="hidden space-y-8">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-cyan-500/20 pb-6">
+                <div>
+                    <h2 class="font-orbitron text-2xl font-black text-cyan-400">DASBOR ADMIN</h2>
+                    <p class="text-xs text-slate-400">Kelola pesanan masuk, tambahkan game baru, ubah harga, dan diskon katalog.</p>
+                </div>
+                <div class="flex items-center gap-3">
+                    <button onclick="openAddGameModal()" class="px-4 py-2.5 rounded-xl bg-gradient-to-r from-cyan-400 to-blue-500 hover:from-cyan-300 hover:to-blue-400 text-slate-950 font-orbitron font-bold text-xs tracking-wider transition shadow-neon-blue flex items-center gap-2">
+                        <i class="fa-solid fa-folder-plus text-sm"></i> TAMBAH GAME BARU
+                    </button>
+                    <span class="text-xs font-orbitron font-bold bg-purple-950 text-purple-400 border border-purple-500/40 px-3 py-1.5 rounded" id="adminDashName">ADMIN</span>
+                </div>
+            </div>
+
+            <!-- TAB MENU ADMIN -->
+            <div class="flex border-b border-cyan-500/10 gap-2">
+                <button onclick="switchAdminTab('orders')" id="btn-tab-orders" class="px-5 py-3 border-b-2 border-cyan-400 text-cyan-400 text-xs font-orbitron font-bold uppercase tracking-wider">Kelola Pesanan</button>
+                <button onclick="switchAdminTab('games')" id="btn-tab-games" class="px-5 py-3 border-b-2 border-transparent text-slate-400 hover:text-slate-100 text-xs font-orbitron font-bold uppercase tracking-wider">Kelola Katalog Game</button>
+            </div>
+
+            <!-- Tab content: Manage Orders -->
+            <div id="admin-tab-orders-content" class="bg-slate-900 border border-cyan-500/20 rounded-3xl p-6">
+                <h3 class="font-orbitron font-bold text-base text-slate-100 mb-4">Daftar Pesanan Masuk (Semua User)</h3>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse text-xs">
+                        <thead>
+                            <tr class="border-b border-cyan-500/10 text-slate-400 uppercase font-semibold">
+                                <th class="py-3 px-4">ID</th>
+                                <th class="py-3 px-4">Pelanggan</th>
+                                <th class="py-3 px-4">Game</th>
+                                <th class="py-3 px-4">Item</th>
+                                <th class="py-3 px-4">ID Game & Zone</th>
+                                <th class="py-3 px-4">Harga</th>
+                                <th class="py-3 px-4">Status</th>
+                                <th class="py-3 px-4 text-center">Tindakan</th>
+                            </tr>
+                        </thead>
+                        <tbody id="adminOrdersTable">
+                            <!-- Dynamic -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Tab content: Manage Games -->
+            <div id="admin-tab-games-content" class="hidden bg-slate-900 border border-cyan-500/20 rounded-3xl p-6">
+                <h3 class="font-orbitron font-bold text-base text-slate-100 mb-4">Edit Katalog Produk Game, Harga, & Diskon</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="adminGamesSettings">
+                    <!-- Dynamic -->
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= DASHBOARD OWNER VIEW ================= -->
+        <div id="view-dashboard-owner" class="hidden space-y-8">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-cyan-500/20 pb-6">
+                <div>
+                    <h2 class="font-orbitron text-2xl font-black text-cyan-400">DASBOR OWNER</h2>
+                    <p class="text-xs text-slate-400">Super Admin panel YanzStore untuk kontrol finansial, manajemen staff, promo, dan konfigurasi iklan.</p>
+                </div>
+                <div class="flex items-center gap-3">
+                    <button onclick="openAddGameModal()" class="px-4 py-2.5 rounded-xl bg-cyan-500 text-slate-950 font-orbitron font-bold text-xs tracking-wider transition shadow-neon-blue flex items-center gap-2">
+                        <i class="fa-solid fa-folder-plus text-sm"></i> TAMBAH GAME
+                    </button>
+                    <span class="text-xs font-orbitron font-bold bg-amber-950 text-amber-400 border border-amber-500/40 px-3 py-1.5 rounded">OWNER / CEO</span>
+                </div>
+            </div>
+
+            <!-- OWNER METRICS STATS -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+                <div class="bg-slate-900 border border-cyan-500/20 p-6 rounded-2xl relative overflow-hidden">
+                    <span class="text-[10px] text-slate-400 uppercase tracking-widest block mb-2 font-semibold">Total Omset Sukses</span>
+                    <h3 class="font-orbitron text-2xl sm:text-3xl font-black text-cyan-400" id="statTotalSales">Rp 0</h3>
+                    <i class="fa-solid fa-coins absolute right-6 bottom-6 text-cyan-500/10 text-5xl"></i>
+                </div>
+                <div class="bg-slate-900 border border-cyan-500/20 p-6 rounded-2xl relative overflow-hidden">
+                    <span class="text-[10px] text-slate-400 uppercase tracking-widest block mb-2 font-semibold">Transaksi Berhasil</span>
+                    <h3 class="font-orbitron text-2xl sm:text-3xl font-black text-emerald-400" id="statSuccessCount">0</h3>
+                    <i class="fa-solid fa-circle-check absolute right-6 bottom-6 text-emerald-500/10 text-5xl"></i>
+                </div>
+                <div class="bg-slate-900 border border-cyan-500/20 p-6 rounded-2xl relative overflow-hidden">
+                    <span class="text-[10px] text-slate-400 uppercase tracking-widest block mb-2 font-semibold">Total Akun Terdaftar</span>
+                    <h3 class="font-orbitron text-2xl sm:text-3xl font-black text-indigo-400" id="statUsersCount">0</h3>
+                    <i class="fa-solid fa-users absolute right-6 bottom-6 text-indigo-500/10 text-5xl"></i>
+                </div>
+            </div>
+
+            <!-- TABS OWNER -->
+            <div class="flex border-b border-cyan-500/10 gap-2">
+                <button onclick="switchOwnerTab('users')" id="btn-own-users" class="px-5 py-3 border-b-2 border-cyan-400 text-cyan-400 text-xs font-orbitron font-bold uppercase tracking-wider">Kelola Hak Akses User</button>
+                <button onclick="switchOwnerTab('settings')" id="btn-own-settings" class="px-5 py-3 border-b-2 border-transparent text-slate-400 hover:text-slate-100 text-xs font-orbitron font-bold uppercase tracking-wider">Pengaturan Web & Promo</button>
+            </div>
+
+            <!-- Tab content: Manage Users -->
+            <div id="own-tab-users-content" class="bg-slate-900 border border-cyan-500/20 rounded-3xl p-6">
+                <h3 class="font-orbitron font-bold text-base text-slate-100 mb-4">Pengaturan Level Peran (Role) Pengguna</h3>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse text-xs">
+                        <thead>
+                            <tr class="border-b border-cyan-500/10 text-slate-400 uppercase font-semibold">
+                                <th class="py-3 px-4">Nama Lengkap</th>
+                                <th class="py-3 px-4">Username</th>
+                                <th class="py-3 px-4">Email</th>
+                                <th class="py-3 px-4">Password</th>
+                                <th class="py-3 px-4">Peran Saat Ini</th>
+                                <th class="py-3 px-4 text-center">Ganti Hak Akses</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ownerUsersTable">
+                            <!-- Dynamic -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Tab content: Settings & Manage Banners -->
+            <div id="own-tab-settings-content" class="hidden bg-slate-900 border border-cyan-500/20 rounded-3xl p-6 space-y-8">
+                <!-- Section 1: Web Configuration -->
+                <div class="max-w-xl space-y-4">
+                    <h3 class="font-orbitron font-bold text-base text-cyan-400">Konfigurasi Pengaturan Portal Web</h3>
+                    <div>
+                        <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">No WhatsApp Admin YanzStore (Format 62...)</label>
+                        <input type="text" id="ownerSetWaNumber" placeholder="Contoh: 6281234567890" class="w-full px-4 py-3 bg-slate-950 border border-cyan-500/30 rounded-xl focus:outline-none focus:border-cyan-400 text-sm">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">Pemberitahuan Utama Beranda (Headline)</label>
+                        <input type="text" id="ownerSetPromoTitle" placeholder="Ketik headline beranda" class="w-full px-4 py-3 bg-slate-950 border border-cyan-500/30 rounded-xl focus:outline-none focus:border-cyan-400 text-sm">
+                    </div>
+                </div>
+
+                <div class="h-px bg-cyan-500/10"></div>
+
+                <!-- Section 2: Manage Promo Ad Banner Photos -->
+                <div class="space-y-4">
+                    <div class="flex justify-between items-center">
+                        <h3 class="font-orbitron font-bold text-base text-cyan-400">Kelola Slide Banner Promo & Iklan</h3>
+                        <button onclick="openAddBannerModal()" class="px-3 py-1.5 rounded-lg bg-cyan-500 text-slate-950 text-xs font-bold hover:bg-cyan-400 transition">TAMBAH IKLAN PROMO</button>
+                    </div>
+                    
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse text-xs">
+                            <thead>
+                                <tr class="border-b border-cyan-500/10 text-slate-400 uppercase font-semibold">
+                                    <th class="py-3 px-4">Foto Promo</th>
+                                    <th class="py-3 px-4">Judul Iklan</th>
+                                    <th class="py-3 px-4">Deskripsi / Subtitle</th>
+                                    <th class="py-3 px-4 text-center">Tindakan</th>
+                                </tr>
+                            </thead>
+                            <tbody id="ownerBannersTable">
+                                <!-- Dynamic -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="h-px bg-cyan-500/10"></div>
+
+                <button onclick="saveOwnerSettings()" class="py-3.5 px-6 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-black font-orbitron text-xs tracking-wider transition duration-300 shadow-neon-blue">
+                    SIMPAN SEMUA CONFIG PORTAL
+                </button>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-slate-950 border-t border-cyan-500/20 py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center sm:text-left">
+            <div class="flex flex-col sm:flex-row justify-between items-center gap-4 text-xs text-slate-500">
+                <p>&copy; 2026 YanzStore. All rights reserved. Tema Neon Premium.</p>
+                <div class="flex gap-4">
+                    <button onclick="switchView('home')" class="hover:text-cyan-400 transition">Beranda</button>
+                    <a href="#cara-order" class="hover:text-cyan-400 transition">Cara Belanja</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ADD/EDIT GAME MODAL (ADMIN & OWNER ONLY) -->
+    <div id="gameModal" class="fixed inset-0 bg-slate-950/95 backdrop-blur-sm hidden z-50 items-center justify-center p-4 overflow-y-auto">
+        <div class="bg-slate-900 border-2 border-cyan-500 rounded-3xl max-w-lg w-full p-6 sm:p-8 space-y-5 shadow-neon-blue-lg relative my-8">
+            <div class="flex justify-between items-center border-b border-cyan-500/20 pb-4">
+                <h3 class="font-orbitron font-black text-lg text-slate-100" id="gameModalTitle">TAMBAH GAME BARU</h3>
+                <button onclick="closeGameModal()" class="text-slate-400 hover:text-cyan-400 transition text-lg">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-left text-xs">
+                <div>
+                    <label class="block font-semibold uppercase tracking-wider text-slate-400 mb-1.5">ID Identifikasi (Satu kata kecil, cth: codm)</label>
+                    <input type="text" id="addGameId" placeholder="cth: codm" class="w-full px-4 py-3 bg-slate-950 border border-cyan-500/20 rounded-xl focus:outline-none focus:border-cyan-400">
+                </div>
+                <div>
+                    <label class="block font-semibold uppercase tracking-wider text-slate-400 mb-1.5">Nama Game</label>
+                    <input type="text" id="addGameName" placeholder="Nama Game" class="w-full px-4 py-3 bg-slate-950 border border-cyan-500/20 rounded-xl focus:outline-none focus:border-cyan-400">
+                </div>
+                <div>
+                    <label class="block font-semibold uppercase tracking-wider text-slate-400 mb-1.5">Developer Game</label>
+                    <input type="text" id="addGameDeveloper" placeholder="Developer" class="w-full px-4 py-3 bg-slate-950 border border-cyan-500/20 rounded-xl focus:outline-none focus:border-cyan-400">
+                </div>
+                <div>
+                    <label class="block font-semibold uppercase tracking-wider text-slate-400 mb-1.5">User ID Input Placeholder</label>
+                    <input type="text" id="addGamePlaceholder" placeholder="cth: Masukkan UID Anda" class="w-full px-4 py-3 bg-slate-950 border border-cyan-500/20 rounded-xl focus:outline-none focus:border-cyan-400">
+                </div>
+                <div class="sm:col-span-2">
+                    <label class="block font-semibold uppercase tracking-wider text-slate-400 mb-1.5">Link Foto Logo Game (Square/1:1)</label>
+                    <input type="text" id="addGameLogo" placeholder="https://..." class="w-full px-4 py-3 bg-slate-950 border border-cyan-500/20 rounded-xl focus:outline-none focus:border-cyan-400">
+                </div>
+                <div class="sm:col-span-2">
+                    <label class="block font-semibold uppercase tracking-wider text-slate-400 mb-1.5">Link Foto Banner Game (Landscape/4:3)</label>
+                    <input type="text" id="addGameBanner" placeholder="https://..." class="w-full px-4 py-3 bg-slate-950 border border-cyan-500/20 rounded-xl focus:outline-none focus:border-cyan-400">
+                </div>
+                <div class="sm:col-span-2 flex items-center gap-3 bg-slate-950 p-3 rounded-xl border border-cyan-500/10">
+                    <input type="checkbox" id="addGameHasZone" onchange="toggleAddGameZoneField()" class="w-4 h-4 text-cyan-500 bg-slate-900 border-slate-700 rounded focus:ring-cyan-400">
+                    <label for="addGameHasZone" class="font-semibold text-slate-300">Game Memiliki Zona ID / Server ID?</label>
+                </div>
+                <div id="addGameZoneContainer" class="sm:col-span-2 hidden">
+                    <label class="block font-semibold uppercase tracking-wider text-slate-400 mb-1.5">Zone/Server Label Placeholder</label>
+                    <input type="text" id="addGameZonePlaceholder" placeholder="cth: Server ID" class="w-full px-4 py-3 bg-slate-950 border border-cyan-500/20 rounded-xl focus:outline-none focus:border-cyan-400">
+                </div>
+            </div>
+            <button onclick="saveNewGame()" class="w-full py-3.5 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-black font-orbitron text-xs tracking-wider transition duration-300 shadow-neon-blue">
+                SIMPAN PRODUK GAME
+            </button>
+        </div>
+    </div>
+
+    <!-- ADD/EDIT PROMO BANNER MODAL (OWNER ONLY) -->
+    <div id="bannerModal" class="fixed inset-0 bg-slate-950/95 backdrop-blur-sm hidden z-50 items-center justify-center p-4">
+        <div class="bg-slate-900 border-2 border-cyan-500 rounded-3xl max-w-sm w-full p-6 space-y-4 shadow-neon-blue-lg relative">
+            <div class="flex justify-between items-center border-b border-cyan-500/20 pb-4">
+                <h3 class="font-orbitron font-black text-sm text-slate-100">TAMBAH BANNER PROMO / IKLAN</h3>
+                <button onclick="closeBannerModal()" class="text-slate-400 hover:text-cyan-400 transition text-lg">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <div class="space-y-3 text-left text-xs">
+                <div>
+                    <label class="block font-semibold uppercase tracking-wider text-slate-400 mb-1.5">Judul Iklan Promo</label>
+                    <input type="text" id="addBannerTitle" placeholder="cth: Diskon Akbar MLBB" class="w-full px-3 py-2.5 bg-slate-950 border border-cyan-500/20 rounded-xl focus:outline-none focus:border-cyan-400">
+                </div>
+                <div>
+                    <label class="block font-semibold uppercase tracking-wider text-slate-400 mb-1.5">Deskripsi / Subtitle</label>
+                    <input type="text" id="addBannerDesc" placeholder="cth: Nikmati diskon MLBB 10% minggu ini" class="w-full px-3 py-2.5 bg-slate-950 border border-cyan-500/20 rounded-xl focus:outline-none focus:border-cyan-400">
+                </div>
+                <div>
+                    <label class="block font-semibold uppercase tracking-wider text-slate-400 mb-1.5">URL Foto Iklan (Landscape)</label>
+                    <input type="text" id="addBannerImg" placeholder="https://..." class="w-full px-3 py-2.5 bg-slate-950 border border-cyan-500/20 rounded-xl focus:outline-none focus:border-cyan-400">
+                </div>
+            </div>
+            <button onclick="saveNewPromoBanner()" class="w-full py-3 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-black font-orbitron text-xs tracking-wider transition duration-300 shadow-neon-blue">
+                TAMBAH SLIDE IKLAN
+            </button>
+        </div>
+    </div>
+
+    <!-- AUTH MODAL (Login / Register) -->
+    <div id="authModal" class="fixed inset-0 bg-slate-950/95 backdrop-blur-sm hidden z-50 items-center justify-center p-4">
+        <div class="bg-slate-900 border-2 border-cyan-500 rounded-3xl max-w-sm w-full p-6 sm:p-8 text-center space-y-6 shadow-neon-blue-lg relative overflow-hidden">
+            <div class="absolute -top-12 -right-12 w-32 h-32 bg-cyan-500/10 rounded-full blur-2xl"></div>
+            
+            <div class="flex justify-between items-center border-b border-cyan-500/20 pb-4">
+                <h3 id="authModalTitle" class="font-orbitron font-black text-xl text-slate-100">MASUK PORTAL</h3>
+                <button onclick="closeAuthModal()" class="text-slate-400 hover:text-cyan-400 transition text-lg">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <!-- Form Fields -->
+            <div class="space-y-4 text-left">
+                <div id="authFullNameContainer" class="hidden">
+                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1.5">Nama Lengkap</label>
+                    <input type="text" id="authFullName" placeholder="Nama Anda" class="w-full px-4 py-3 bg-slate-950 border border-cyan-500/30 rounded-xl focus:outline-none focus:border-cyan-400 text-sm text-slate-100">
+                </div>
+                <div id="authEmailContainer" class="hidden">
+                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1.5">Email</label>
+                    <input type="email" id="authEmail" placeholder="contoh@domain.com" class="w-full px-4 py-3 bg-slate-950 border border-cyan-500/30 rounded-xl focus:outline-none focus:border-cyan-400 text-sm text-slate-100">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1.5">Username</label>
+                    <input type="text" id="authUsername" placeholder="Ketik username" class="w-full px-4 py-3 bg-slate-950 border border-cyan-500/30 rounded-xl focus:outline-none focus:border-cyan-400 text-sm text-slate-100">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1.5">Password</label>
+                    <input type="password" id="authPassword" placeholder="Ketik password" class="w-full px-4 py-3 bg-slate-950 border border-cyan-500/30 rounded-xl focus:outline-none focus:border-cyan-400 text-sm text-slate-100">
+                </div>
+            </div>
+
+            <!-- Trigger Button -->
+            <button onclick="handleAuthSubmit()" id="authSubmitBtn" class="w-full py-3.5 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-black font-orbitron text-xs tracking-widest transition duration-300 shadow-neon-blue">
+                MASUK SEKARANG
+            </button>
+
+            <!-- Toggle Register/Login Link -->
+            <p class="text-xs text-slate-400" id="authToggleText">
+                Belum punya akun? 
+                <button onclick="toggleAuthMode()" class="text-cyan-400 hover:underline font-bold">Daftar Di Sini</button>
+            </p>
+        </div>
+    </div>
+
+    <!-- DYNAMIC CONFIRMATION MODAL -->
+    <div id="customModal" class="fixed inset-0 bg-slate-950/95 backdrop-blur-sm hidden z-50 items-center justify-center p-4">
+        <div class="bg-slate-900 border-2 border-cyan-500 rounded-3xl max-w-sm w-full p-6 text-center space-y-4 shadow-neon-blue-lg relative overflow-hidden">
+            <div class="absolute -top-12 -right-12 w-32 h-32 bg-cyan-500/10 rounded-full blur-2xl"></div>
+            
+            <div id="modalIconContainer" class="w-14 h-14 rounded-full mx-auto flex items-center justify-center text-2xl"></div>
+            
+            <h3 id="modalTitle" class="font-orbitron font-black text-lg text-slate-100">Judul</h3>
+            <p id="modalMessage" class="text-xs text-slate-400 leading-relaxed">Pesan rincian...</p>
+            
+            <div class="flex gap-3 pt-2" id="modalButtonContainer">
+                <button onclick="closeModal()" class="flex-grow py-3 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-black font-orbitron text-xs tracking-wider transition duration-300 shadow-neon-blue">
+                    TUTUP
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT LOGIC WITH LOCALSTORAGE PERSISTENCE -->
+    <script>
+        // DEFAULT INITIAL SYSTEM DATA
+        const DEFAULT_GAMES_DATA = {
+            mlbb: {
+                id: "mlbb",
+                name: "Mobile Legends",
+                developer: "Moonton",
+                banner: "https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=800&q=80",
+                logo: "https://img.icons8.com/color/144/mobile-legends.png",
+                idPlaceholder: "User ID (Contoh: 12345678)",
+                hasZone: true,
+                zonePlaceholder: "Zone ID (Contoh: 1234)",
+                items: [
+                    { id: "ml-86", name: "86 Diamonds", originalPrice: 25000, price: 20000 },
+                    { id: "ml-172", name: "172 Diamonds", originalPrice: 48000, price: 40000 },
+                    { id: "ml-257", name: "257 Diamonds", originalPrice: 65000, price: 60000 },
+                    { id: "ml-706", name: "706 Diamonds", originalPrice: 180000, price: 160000 }
+                ]
+            },
+            ff: {
+                id: "ff",
+                name: "Free Fire",
+                developer: "Garena",
+                banner: "https://images.unsplash.com/photo-1552820728-8b83bb6b773f?auto=format&fit=crop&w=800&q=80",
+                logo: "https://img.icons8.com/color/144/free-fire.png",
+                idPlaceholder: "Player ID (Contoh: 87654321)",
+                hasZone: false,
+                items: [
+                    { id: "ff-140", name: "140 Diamonds", originalPrice: 25000, price: 19500 },
+                    { id: "ff-355", name: "355 Diamonds", originalPrice: 55000, price: 48000 },
+                    { id: "ff-720", name: "720 Diamonds", originalPrice: 110000, price: 95000 }
+                ]
+            },
+            genshin: {
+                id: "genshin",
+                name: "Genshin Impact",
+                developer: "HoYoverse",
+                banner: "https://images.unsplash.com/photo-1612287230202-1bf1d85d1bdf?auto=format&fit=crop&w=800&q=80",
+                logo: "https://img.icons8.com/color/144/genshin-impact.png",
+                idPlaceholder: "UID Akun (Contoh: 182390291)",
+                hasZone: true,
+                zonePlaceholder: "Server (Asia/America/Europe/TW-HK)",
+                items: [
+                    { id: "gi-60", name: "60 Genesis Crystals", originalPrice: 18000, price: 16000 },
+                    { id: "gi-300", name: "300+30 Genesis Crystals", originalPrice: 85000, price: 79000 },
+                    { id: "gi-980", name: "980+110 Genesis Crystals", originalPrice: 270000, price: 245000 }
+                ]
+            }
+        };
+
+        const DEFAULT_USERS = [
+            { username: "owner", password: "owner123", name: "Yanz CEO", email: "ceo@yanzstore.com", role: "owner" },
+            { username: "admin", password: "admin123", name: "Admin Utama", email: "admin@yanzstore.com", role: "admin" },
+            { username: "user", password: "user123", name: "Member Premium", email: "gamer@yanzstore.com", role: "user" }
+        ];
+
+        const DEFAULT_ORDERS = [
+            { id: "TX-10022", username: "user", game: "Mobile Legends", item: "257 Diamonds", price: 60000, targetId: "54231234", zone: "1234", status: "Success", date: "2026-05-23 08:30" }
+        ];
+
+        const DEFAULT_SETTINGS = {
+            whatsappNumber: "6281234567890",
+            promoTitle: "Portal Top Up Game Terlengkap Se-Indonesia"
+        };
+
+        const DEFAULT_BANNERS = [
+            {
+                id: "ban-1",
+                src: "https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=800&q=80",
+                title: "Spesial Diskon Mobile Legends",
+                desc: "Hemat s/d 20% khusus pembelian via WhatsApp YanzStore hari ini!"
+            },
+            {
+                id: "ban-2",
+                src: "https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=800&q=80",
+                title: "Genshin Impact Blessing Promo",
+                desc: "Genesis Crystals & Welkin Moon termurah, amanah 24 jam."
+            }
+        ];
+
+        // LOAD SYSTEM DATA OR SAVE DEFAULTS
+        if (!localStorage.getItem('neon_games')) localStorage.setItem('neon_games', JSON.stringify(DEFAULT_GAMES_DATA));
+        if (!localStorage.getItem('neon_users')) localStorage.setItem('neon_users', JSON.stringify(DEFAULT_USERS));
+        if (!localStorage.getItem('neon_orders')) localStorage.setItem('neon_orders', JSON.stringify(DEFAULT_ORDERS));
+        if (!localStorage.getItem('neon_settings')) localStorage.setItem('neon_settings', JSON.stringify(DEFAULT_SETTINGS));
+        if (!localStorage.getItem('neon_banners')) localStorage.setItem('neon_banners', JSON.stringify(DEFAULT_BANNERS));
+
+        // STORAGE UTILITIES
+        function getGames() { return JSON.parse(localStorage.getItem('neon_games')); }
+        function saveGames(data) { localStorage.setItem('neon_games', JSON.stringify(data)); }
+        function getUsers() { return JSON.parse(localStorage.getItem('neon_users')); }
+        function saveUsers(data) { localStorage.setItem('neon_users', JSON.stringify(data)); }
+        function getOrders() { return JSON.parse(localStorage.getItem('neon_orders')); }
+        function saveOrders(data) { localStorage.setItem('neon_orders', JSON.stringify(data)); }
+        function getSettings() { return JSON.parse(localStorage.getItem('neon_settings')); }
+        function saveSettings(data) { localStorage.setItem('neon_settings', JSON.stringify(data)); }
+        function getBanners() { return JSON.parse(localStorage.getItem('neon_banners')); }
+        function saveBanners(data) { localStorage.setItem('neon_banners', JSON.stringify(data)); }
+
+        // RUNTIME STATE
+        let currentUser = null;
+        let selectedGame = null;
+        let selectedNominal = null;
+        let isAuthRegisterMode = false;
+        let activeAdminTab = 'orders';
+        let activeOwnerTab = 'users';
+        let activeUserTab = 'orders';
+        let promoCarouselInterval = null;
+
+        // ONLOAD INITIALIZATION
+        window.onload = function() {
+            renderGamesList();
+            updateHeaderAuth();
+            setupPromoBannerCarousel();
+            updateHeadlineText();
+            showToast("YanzStore Berhasil Dimuat", "Selamat datang di website top up premium kami!", "info");
+        };
+
+        // UPDATE HOME HEADLINE
+        function updateHeadlineText() {
+            const set = getSettings();
+            const element = document.getElementById('homeMainPromoTitle');
+            if (element && set.promoTitle) {
+                element.textContent = set.promoTitle;
+            }
+        }
+
+        // ================= NEON TOAST SYSTEM =================
+        function showToast(title, message, type = 'info') {
+            const container = document.getElementById('toast-container');
+            const toastId = 'toast-' + Math.floor(Math.random() * 100000);
+            
+            let glowClass = 'shadow-neon-blue border-cyan-500/50';
+            let iconHtml = '<i class="fa-solid fa-circle-info text-cyan-400 text-lg"></i>';
+            if (type === 'success') {
+                glowClass = 'shadow-neon-green border-emerald-500/50';
+                iconHtml = '<i class="fa-solid fa-circle-check text-emerald-400 text-lg"></i>';
+            } else if (type === 'error') {
+                glowClass = 'shadow-neon-pink border-pink-500/50';
+                iconHtml = '<i class="fa-solid fa-triangle-exclamation text-pink-400 text-lg"></i>';
+            }
+
+            const toast = document.createElement('div');
+            toast.id = toastId;
+            toast.className = `toast-enter pointer-events-auto w-full bg-slate-900/95 backdrop-blur-md border border-t-2 border-t-cyan-400 p-4 rounded-2xl flex gap-3 ${glowClass} relative overflow-hidden`;
+            
+            toast.innerHTML = `
+                <div class="flex-shrink-0 pt-0.5">
+                    ${iconHtml}
+                </div>
+                <div class="flex-1 space-y-1">
+                    <h4 class="font-orbitron font-bold text-xs text-slate-100 uppercase tracking-wider">${title}</h4>
+                    <p class="text-[11px] text-slate-400 leading-relaxed">${message}</p>
+                </div>
+                <button onclick="dismissToast('${toastId}')" class="text-slate-500 hover:text-slate-200 transition-colors self-start text-xs">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+                <div class="absolute bottom-0 left-0 h-[2px] bg-gradient-to-r from-cyan-400 to-blue-500 toast-timer"></div>
+            `;
+
+            container.appendChild(toast);
+
+            setTimeout(() => { dismissToast(toastId); }, 4000);
+        }
+
+        function dismissToast(id) {
+            const toast = document.getElementById(id);
+            if (toast) {
+                toast.classList.remove('toast-enter');
+                toast.classList.add('toast-exit');
+                setTimeout(() => { toast.remove(); }, 400);
+            }
+        }
+
+        // SWITCH VIEW (SPA CONTROLLER)
+        function switchView(viewName) {
+            document.getElementById('view-home').classList.add('hidden');
+            document.getElementById('view-purchase').classList.add('hidden');
+            document.getElementById('view-dashboard-user').classList.add('hidden');
+            document.getElementById('view-dashboard-admin').classList.add('hidden');
+            document.getElementById('view-dashboard-owner').classList.add('hidden');
+
+            const currentView = document.getElementById(`view-${viewName}`);
+            if (currentView) {
+                currentView.classList.remove('hidden');
+            }
+
+            if (viewName === 'dashboard-user') renderUserDashboard();
+            if (viewName === 'dashboard-admin') renderAdminDashboard();
+            if (viewName === 'dashboard-owner') renderOwnerDashboard();
+        }
+
+        function formatRupiah(number) {
+            return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(number);
+        }
+
+        function openCSWhatsApp() {
+            const set = getSettings();
+            window.open(`https://wa.me/${set.whatsappNumber}`, '_blank');
+        }
+
+        // ================= AD CAROUSEL (PROMO BANNERS) =================
+        function setupPromoBannerCarousel() {
+            const banners = getBanners();
+            if (banners.length === 0) return;
+
+            let index = 0;
+            const bannerImg = document.getElementById('promoBannerImg');
+            const h3 = document.getElementById('promoAdTitle');
+            const p = document.getElementById('promoAdDesc');
+
+            if (!bannerImg) return;
+
+            // Stop previous interval if exists
+            if (promoCarouselInterval) clearInterval(promoCarouselInterval);
+
+            // Populate first banner
+            bannerImg.src = banners[index].src;
+            h3.textContent = banners[index].title;
+            p.textContent = banners[index].desc;
+
+            promoCarouselInterval = setInterval(() => {
+                index = (index + 1) % banners.length;
+                bannerImg.classList.add('opacity-0');
+                setTimeout(() => {
+                    bannerImg.src = banners[index].src;
+                    h3.textContent = banners[index].title;
+                    p.textContent = banners[index].desc;
+                    bannerImg.classList.remove('opacity-0');
+                }, 300);
+            }, 6000);
+        }
+
+        // ================= GAME LISTS / HOME =================
+        function renderGamesList(filterText = '') {
+            const grid = document.getElementById('gamesGrid');
+            grid.innerHTML = '';
+            
+            const games = Object.values(getGames());
+            const filteredGames = games.filter(game => 
+                game.name.toLowerCase().includes(filterText.toLowerCase()) || 
+                game.developer.toLowerCase().includes(filterText.toLowerCase())
+            );
+
+            filteredGames.forEach(game => {
+                const card = document.createElement('div');
+                card.onclick = () => selectGame(game.id);
+                card.className = "group bg-slate-900 border border-cyan-500/20 hover:border-cyan-400 p-5 rounded-2xl flex flex-col items-center justify-center text-center cursor-pointer transition-all duration-300 hover:scale-105 hover:shadow-neon-blue relative overflow-hidden";
+                card.innerHTML = `
+                    <div class="absolute inset-0 bg-gradient-to-t from-cyan-950/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition duration-300"></div>
+                    <div class="w-14 h-14 mb-4 rounded-xl bg-slate-950 flex items-center justify-center border border-cyan-500/10 group-hover:border-cyan-400 group-hover:shadow-[0_0_10px_rgba(6,182,212,0.4)] transition duration-300 overflow-hidden">
+                        <img src="${game.logo}" alt="${game.name}" class="w-10 h-10 object-contain" onerror="this.src='https://img.icons8.com/color/144/game-controller.png'">
+                    </div>
+                    <h3 class="font-orbitron font-bold text-xs text-slate-100 tracking-wider group-hover:text-cyan-400 transition-colors">${game.name}</h3>
+                    <p class="text-[10px] text-slate-500 mt-1 uppercase font-semibold">${game.developer}</p>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function searchGames(text) {
+            renderGamesList(text);
+        }
+
+        // GAME SELECT FOR TOP UP
+        function selectGame(gameId) {
+            const games = getGames();
+            const game = games[gameId];
+            if (!game) return;
+
+            selectedGame = game;
+            selectedNominal = null;
+
+            switchView('purchase');
+
+            document.getElementById('selectedGameBanner').src = game.banner;
+            document.getElementById('selectedGameName').textContent = game.name;
+            document.getElementById('selectedGameDeveloper').textContent = game.developer;
+
+            const userIdInput = document.getElementById('inputUserId');
+            userIdInput.value = "";
+            userIdInput.placeholder = game.idPlaceholder;
+
+            const zoneContainer = document.getElementById('zoneIdContainer');
+            const zoneInput = document.getElementById('inputZoneId');
+            if (game.hasZone) {
+                zoneContainer.style.display = 'block';
+                document.getElementById('zoneIdLabel').textContent = game.zonePlaceholder;
+                zoneInput.value = "";
+                zoneInput.placeholder = "Masukkan " + game.zonePlaceholder;
+            } else {
+                zoneContainer.style.display = 'none';
+                zoneInput.value = "";
+            }
+
+            renderNominals(game.items);
+            updateSummaryUI();
+        }
+
+        // RENDER ITEMS (WITH DISCOUNT FEATURE BADGES)
+        function renderNominals(items) {
+            const container = document.getElementById('nominalGrid');
+            container.innerHTML = '';
+
+            items.forEach(item => {
+                const card = document.createElement('div');
+                card.id = `item-card-${item.id}`;
+                card.onclick = () => selectNominal(item);
+                card.className = "nominal-card border border-cyan-500/20 bg-slate-950 hover:border-cyan-400 p-4 rounded-2xl cursor-pointer text-center transition duration-300 relative group overflow-hidden flex flex-col justify-between";
+                
+                // Calculate and Show Discount Badge
+                let discountBadgeHtml = '';
+                let priceHtml = `<p class="text-xs text-cyan-400 mt-2 font-semibold font-orbitron">${formatRupiah(item.price)}</p>`;
+                
+                if (item.originalPrice && item.originalPrice > item.price) {
+                    const diffPercent = Math.round(((item.originalPrice - item.price) / item.originalPrice) * 100);
+                    discountBadgeHtml = `
+                        <span class="absolute top-0 right-0 bg-gradient-to-r from-pink-500 to-rose-600 text-white font-orbitron font-bold text-[9px] px-2 py-0.5 rounded-bl-lg shadow-neon-pink z-10">
+                            -${diffPercent}% OFF
+                        </span>
+                    `;
+                    priceHtml = `
+                        <div class="mt-2 space-y-0.5">
+                            <p class="text-[10px] text-slate-500 line-through">${formatRupiah(item.originalPrice)}</p>
+                            <p class="text-xs text-cyan-400 font-bold font-orbitron">${formatRupiah(item.price)}</p>
+                        </div>
+                    `;
+                }
+
+                card.innerHTML = `
+                    ${discountBadgeHtml}
+                    <div>
+                        <i class="fa-solid fa-gem text-cyan-400 text-sm mb-1 block group-hover:scale-110 transition duration-300"></i>
+                        <h5 class="font-bold text-xs text-slate-100">${item.name}</h5>
+                    </div>
+                    ${priceHtml}
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function selectNominal(item) {
+            selectedNominal = item;
+            
+            document.querySelectorAll('.nominal-card').forEach(card => {
+                card.classList.remove('border-cyan-400', 'shadow-neon-blue', 'bg-slate-900');
+                card.classList.add('border-cyan-500/20', 'bg-slate-950');
+            });
+
+            const activeCard = document.getElementById(`item-card-${item.id}`);
+            if (activeCard) {
+                activeCard.classList.remove('border-cyan-500/20', 'bg-slate-950');
+                activeCard.classList.add('border-cyan-400', 'shadow-neon-blue', 'bg-slate-900');
+            }
+
+            updateSummaryUI();
+        }
+
+        function updateSummaryUI() {
+            const summaryGame = document.getElementById('summaryGame');
+            const summaryId = document.getElementById('summaryId');
+            const summaryItem = document.getElementById('summaryItem');
+            const summaryPrice = document.getElementById('summaryPrice');
+
+            const userId = document.getElementById('inputUserId').value.trim() || "-";
+            const zoneId = document.getElementById('inputZoneId').value.trim();
+
+            summaryGame.textContent = selectedGame ? selectedGame.name : "-";
+            
+            if (selectedGame) {
+                if (selectedGame.hasZone && zoneId) {
+                    summaryId.textContent = `${userId} (${zoneId})`;
+                } else {
+                    summaryId.textContent = userId;
+                }
+            } else {
+                summaryId.textContent = "-";
+            }
+
+            summaryItem.textContent = selectedNominal ? selectedNominal.name : "-";
+            summaryPrice.textContent = selectedNominal ? formatRupiah(selectedNominal.price) : "-";
+        }
+
+        document.getElementById('inputUserId').addEventListener('input', updateSummaryUI);
+        document.getElementById('inputZoneId').addEventListener('input', updateSummaryUI);
+
+        // ================= CHECKOUT & WA INTEGRATION =================
+        function triggerCheckout() {
+            if (!currentUser) {
+                showToast("Sesi Diperlukan", "Harap melakukan login untuk melanjutkan pembelian.", "error");
+                setTimeout(() => { openAuthModal(); }, 1000);
+                return;
+            }
+
+            if (!selectedGame) {
+                showToast("Data Kurang", "Pilih produk game di katalog terlebih dahulu.", "error");
+                return;
+            }
+
+            const userId = document.getElementById('inputUserId').value.trim();
+            const zoneId = document.getElementById('inputZoneId').value.trim();
+
+            if (!userId) {
+                showToast("Input Kosong", "Masukkan ID Akun Game Anda.", "error");
+                return;
+            }
+
+            if (selectedGame.hasZone && !zoneId) {
+                showToast("Input Kosong", `Harap masukkan ${selectedGame.zonePlaceholder}.`, "error");
+                return;
+            }
+
+            if (!selectedNominal) {
+                showToast("Pilih Nominal", "Silakan pilih nominal produk top-up terlebih dahulu.", "error");
+                return;
+            }
+
+            // Create Order
+            const orders = getOrders();
+            const txId = "YZ-" + Math.floor(10000 + Math.random() * 90000);
+            const dateStr = new Date().toISOString().slice(0, 19).replace('T', ' ');
+
+            const newOrder = {
+                id: txId,
+                username: currentUser.username,
+                game: selectedGame.name,
+                item: selectedNominal.name,
+                price: selectedNominal.price,
+                targetId: userId,
+                zone: zoneId,
+                status: "Pending",
+                date: dateStr
+            };
+
+            orders.unshift(newOrder);
+            saveOrders(orders);
+
+            // Create WA Message Text
+            const set = getSettings();
+            let waText = `Halo Admin YanzStore, saya ingin melakukan Pembayaran Top Up:\n\n` +
+                         `📌 *Invoice:* ${txId}\n` +
+                         `👤 *Akun Member:* ${currentUser.username}\n` +
+                         `🎮 *Game:* ${selectedGame.name}\n` +
+                         `🆔 *User ID:* ${userId}\n`;
+                         
+            if (selectedGame.hasZone) {
+                waText += `🌐 *Zone/Server:* ${zoneId}\n`;
+            }
+            
+            waText += `💎 *Nominal:* ${selectedNominal.name}\n` +
+                      `💵 *Total Tagihan:* ${formatRupiah(selectedNominal.price)}\n` +
+                      `⌚ *Status:* PENDING (Harap kirim instruksi transfer rekening bank/Qris)\n\n` +
+                      `Terima kasih YanzStore!`;
+
+            const encodedText = encodeURIComponent(waText);
+            const waUrl = `https://wa.me/${set.whatsappNumber}?text=${encodedText}`;
+
+            showModal("Rincian Transaksi Dibuat", "Transaksi telah dibuat dengan status 'Pending'. Selesaikan pembayaran dengan CS WhatsApp Admin.", "success", waUrl);
+            showToast("Transaksi Pending", "Rincian invoice tersimpan, arahkan ke admin.", "success");
+        }
+
+        // ================= HEADER AUTH CONTROL =================
+        function openAuthModal() {
+            document.getElementById('authModal').classList.remove('hidden');
+            document.getElementById('authModal').classList.add('flex');
+            setAuthMode(false);
+        }
+
+        function closeAuthModal() {
+            document.getElementById('authModal').classList.add('hidden');
+            document.getElementById('authModal').classList.remove('flex');
+        }
+
+        function toggleAuthMode() {
+            setAuthMode(!isAuthRegisterMode);
+        }
+
+        function setAuthMode(isRegister) {
+            isAuthRegisterMode = isRegister;
+            const title = document.getElementById('authModalTitle');
+            const nameContainer = document.getElementById('authFullNameContainer');
+            const emailContainer = document.getElementById('authEmailContainer');
+            const submitBtn = document.getElementById('authSubmitBtn');
+            const toggleText = document.getElementById('authToggleText');
+
+            document.getElementById('authFullName').value = "";
+            document.getElementById('authEmail').value = "";
+            document.getElementById('authUsername').value = "";
+            document.getElementById('authPassword').value = "";
+
+            if (isRegister) {
+                title.textContent = "DAFTAR AKUN BARU";
+                nameContainer.classList.remove('hidden');
+                emailContainer.classList.remove('hidden');
+                submitBtn.textContent = "DAFTAR SEKARANG";
+                toggleText.innerHTML = `Sudah punya akun? <button onclick="toggleAuthMode()" class="text-cyan-400 hover:underline font-bold">Masuk Di Sini</button>`;
+            } else {
+                title.textContent = "MASUK PORTAL";
+                nameContainer.classList.add('hidden');
+                emailContainer.classList.add('hidden');
+                submitBtn.textContent = "MASUK SEKARANG";
+                toggleText.innerHTML = `Belum punya akun? <button onclick="toggleAuthMode()" class="text-cyan-400 hover:underline font-bold">Daftar Di Sini</button>`;
+            }
+        }
+
+        function handleAuthSubmit() {
+            const username = document.getElementById('authUsername').value.trim().toLowerCase();
+            const password = document.getElementById('authPassword').value;
+            const fullName = document.getElementById('authFullName').value.trim();
+            const email = document.getElementById('authEmail').value.trim();
+
+            if (!username || !password) {
+                showToast("Gagal Login", "Username dan password wajib diisi.", "error");
+                return;
+            }
+
+            const users = getUsers();
+
+            if (isAuthRegisterMode) {
+                if (!fullName || !email) {
+                    showToast("Gagal Daftar", "Semua kolom pendaftaran wajib diisi.", "error");
+                    return;
+                }
+
+                const exist = users.find(u => u.username === username);
+                if (exist) {
+                    showToast("Nama Pengguna Ada", "Username sudah digunakan.", "error");
+                    return;
+                }
+
+                const newUser = {
+                    username: username,
+                    password: password,
+                    name: fullName,
+                    email: email,
+                    role: "user"
+                };
+
+                users.push(newUser);
+                saveUsers(users);
+
+                showToast("Daftar Sukses", "Silakan login menggunakan akun baru Anda.", "success");
+                setAuthMode(false);
+            } else {
+                const user = users.find(u => u.username === username && u.password === password);
+                if (!user) {
+                    showToast("Akses Ditolak", "Kombinasi login salah.", "error");
+                    return;
+                }
+
+                currentUser = user;
+                updateHeaderAuth();
+                closeAuthModal();
+                showToast("Login Berhasil", `Selamat datang kembali, ${user.name}!`, "success");
+                
+                if (user.role === 'owner') {
+                    switchView('dashboard-owner');
+                } else if (user.role === 'admin') {
+                    switchView('dashboard-admin');
+                } else {
+                    switchView('home');
+                }
+            }
+        }
+
+        function handleLogout() {
+            currentUser = null;
+            updateHeaderAuth();
+            switchView('home');
+            showToast("Keluar", "Sesi Anda telah berakhir.", "success");
+        }
+
+        function updateHeaderAuth() {
+            const authSection = document.getElementById('headerAuthSection');
+            authSection.innerHTML = '';
+
+            if (currentUser) {
+                let dashTarget = 'dashboard-user';
+
+                if (currentUser.role === 'admin') {
+                    dashTarget = 'dashboard-admin';
+                } else if (currentUser.role === 'owner') {
+                    dashTarget = 'dashboard-owner';
+                }
+
+                authSection.innerHTML = `
+                    <div class="flex items-center gap-3">
+                        <button onclick="switchView('${dashTarget}')" class="px-3.5 py-2.5 rounded-full bg-slate-900 border border-cyan-500/30 font-orbitron text-xs font-bold hover:shadow-neon-blue transition duration-300 flex items-center gap-2">
+                            <i class="fa-solid fa-gauge text-cyan-400"></i> Dasbor
+                        </button>
+                        <button onclick="handleLogout()" class="w-10 h-10 rounded-full bg-pink-950/40 border border-pink-500/30 text-pink-500 hover:text-pink-400 hover:shadow-neon-pink flex items-center justify-center transition" title="Log Keluar">
+                            <i class="fa-solid fa-power-off"></i>
+                        </button>
+                    </div>
+                `;
+            } else {
+                authSection.innerHTML = `
+                    <button onclick="openAuthModal()" class="px-5 py-2.5 rounded-full bg-cyan-500 text-slate-950 font-orbitron font-black text-xs tracking-wider hover:bg-cyan-400 transition shadow-neon-blue">
+                        MASUK / DAFTAR
+                    </button>
+                `;
+            }
+        }
+
+        // ================= USER DASHBOARD PROFILE =================
+        function switchUserTab(tabName) {
+            activeUserTab = tabName;
+            const btnOrders = document.getElementById('btn-user-orders');
+            const btnProfile = document.getElementById('btn-user-profile');
+            const contentOrders = document.getElementById('user-tab-orders-content');
+            const contentProfile = document.getElementById('user-tab-profile-content');
+
+            btnOrders.className = "px-5 py-3 border-b-2 text-xs font-orbitron font-bold uppercase tracking-wider " + (tabName === 'orders' ? 'border-cyan-400 text-cyan-400' : 'border-transparent text-slate-400');
+            btnProfile.className = "px-5 py-3 border-b-2 text-xs font-orbitron font-bold uppercase tracking-wider " + (tabName === 'profile' ? 'border-cyan-400 text-cyan-400' : 'border-transparent text-slate-400');
+
+            if (tabName === 'orders') {
+                contentOrders.classList.remove('hidden');
+                contentProfile.classList.add('hidden');
+            } else {
+                contentOrders.classList.add('hidden');
+                contentProfile.classList.remove('hidden');
+            }
+            renderUserDashboard();
+        }
+
+        function renderUserDashboard() {
+            if (!currentUser) return;
+            document.getElementById('userDashName').textContent = currentUser.name;
+
+            if (activeUserTab === 'orders') {
+                const table = document.getElementById('userOrdersTable');
+                table.innerHTML = '';
+                const orders = getOrders().filter(o => o.username === currentUser.username);
+
+                if (orders.length === 0) {
+                    table.innerHTML = `<tr><td colspan="7" class="py-6 text-center text-slate-500">Belum ada riwayat pembelian game.</td></tr>`;
+                    return;
+                }
+
+                orders.forEach(order => {
+                    let statusBadge = '';
+                    if (order.status === 'Success') {
+                        statusBadge = `<span class="px-2 py-1 rounded bg-emerald-950 text-emerald-400 border border-emerald-500/30 font-bold uppercase tracking-wider text-[10px]">SUKSES</span>`;
+                    } else if (order.status === 'Failed') {
+                        statusBadge = `<span class="px-2 py-1 rounded bg-pink-950 text-pink-400 border border-pink-500/30 font-bold uppercase tracking-wider text-[10px]">GAGAL</span>`;
+                    } else {
+                        statusBadge = `<span class="px-2 py-1 rounded bg-amber-950 text-amber-400 border border-amber-500/30 font-bold uppercase tracking-wider text-[10px] animate-pulse">PENDING</span>`;
+                    }
+
+                    const targetAcc = order.zone ? `${order.targetId} (${order.zone})` : order.targetId;
+
+                    const tr = document.createElement('tr');
+                    tr.className = "border-b border-cyan-500/5 hover:bg-slate-900/40 transition";
+                    tr.innerHTML = `
+                        <td class="py-3 px-4 font-mono text-cyan-400 font-bold">${order.id}</td>
+                        <td class="py-3 px-4 text-slate-400">${order.date}</td>
+                        <td class="py-3 px-4 font-semibold text-slate-100">${order.game}</td>
+                        <td class="py-3 px-4 text-slate-300">${order.item}</td>
+                        <td class="py-3 px-4 font-mono text-slate-400">${targetAcc}</td>
+                        <td class="py-3 px-4 font-bold text-cyan-400">${formatRupiah(order.price)}</td>
+                        <td class="py-3 px-4 text-center">${statusBadge}</td>
+                    `;
+                    table.appendChild(tr);
+                });
+            } else {
+                document.getElementById('editUsername').value = currentUser.username;
+                document.getElementById('editFullName').value = currentUser.name;
+                document.getElementById('editEmail').value = currentUser.email || "";
+                document.getElementById('editNewPassword').value = "";
+                document.getElementById('editConfirmPassword').value = "";
+            }
+        }
+
+        function saveUserProfile() {
+            const fullName = document.getElementById('editFullName').value.trim();
+            const email = document.getElementById('editEmail').value.trim();
+            const newPassword = document.getElementById('editNewPassword').value;
+            const confirmPassword = document.getElementById('editConfirmPassword').value;
+
+            if (!fullName || !email) {
+                showToast("Input Kosong", "Kolom nama dan email wajib diisi.", "error");
+                return;
+            }
+
+            if (newPassword && newPassword !== confirmPassword) {
+                showToast("Password Berbeda", "Ulangi konfirmasi sandi baru dengan benar.", "error");
+                return;
+            }
+
+            const users = getUsers();
+            const index = users.findIndex(u => u.username === currentUser.username);
+
+            if (index !== -1) {
+                users[index].name = fullName;
+                users[index].email = email;
+                if (newPassword) {
+                    users[index].password = newPassword;
+                }
+
+                saveUsers(users);
+                currentUser = users[index];
+                updateHeaderAuth();
+                document.getElementById('userDashName').textContent = currentUser.name;
+                showToast("Profil Disimpan", "Informasi akun berhasil disimpan secara permanen.", "success");
+            }
+        }
+
+        // ================= ADMIN CONTROLLER (PROD MANAGEMENT, PRICE & DISCOUNTS) =================
+        function switchAdminTab(tabName) {
+            activeAdminTab = tabName;
+            
+            const btnOrders = document.getElementById('btn-tab-orders');
+            const btnGames = document.getElementById('btn-tab-games');
+            const contentOrders = document.getElementById('admin-tab-orders-content');
+            const contentGames = document.getElementById('admin-tab-games-content');
+
+            btnOrders.className = "px-5 py-3 border-b-2 text-xs font-orbitron font-bold uppercase tracking-wider " + (tabName === 'orders' ? 'border-cyan-400 text-cyan-400' : 'border-transparent text-slate-400');
+            btnGames.className = "px-5 py-3 border-b-2 text-xs font-orbitron font-bold uppercase tracking-wider " + (tabName === 'games' ? 'border-cyan-400 text-cyan-400' : 'border-transparent text-slate-400');
+
+            if (tabName === 'orders') {
+                contentOrders.classList.remove('hidden');
+                contentGames.classList.add('hidden');
+            } else {
+                contentOrders.classList.add('hidden');
+                contentGames.classList.remove('hidden');
+            }
+            renderAdminDashboard();
+        }
+
+        function renderAdminDashboard() {
+            if (!currentUser) return;
+            document.getElementById('adminDashName').textContent = currentUser.name;
+
+            if (activeAdminTab === 'orders') {
+                const table = document.getElementById('adminOrdersTable');
+                table.innerHTML = '';
+                const orders = getOrders();
+
+                if (orders.length === 0) {
+                    table.innerHTML = `<tr><td colspan="8" class="py-6 text-center text-slate-500">Belum ada pesanan masuk.</td></tr>`;
+                    return;
+                }
+
+                orders.forEach(order => {
+                    let statusBadge = '';
+                    if (order.status === 'Success') {
+                        statusBadge = `<span class="px-2 py-0.5 rounded bg-emerald-950 text-emerald-400 border border-emerald-500/30 font-bold text-[9px]">SUKSES</span>`;
+                    } else if (order.status === 'Failed') {
+                        statusBadge = `<span class="px-2 py-0.5 rounded bg-pink-950 text-pink-400 border border-pink-500/30 font-bold text-[9px]">GAGAL</span>`;
+                    } else {
+                        statusBadge = `<span class="px-2 py-0.5 rounded bg-amber-950 text-amber-400 border border-amber-500/30 font-bold text-[9px] animate-pulse">PENDING</span>`;
+                    }
+
+                    const targetAcc = order.zone ? `${order.targetId} (${order.zone})` : order.targetId;
+
+                    const actions = order.status === 'Pending' ? `
+                        <div class="flex items-center justify-center gap-1">
+                            <button onclick="changeOrderStatus('${order.id}', 'Success')" class="px-2.5 py-1 bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-bold text-[10px] rounded hover:shadow-neon-green transition">SUKSES</button>
+                            <button onclick="changeOrderStatus('${order.id}', 'Failed')" class="px-2.5 py-1 bg-pink-600 hover:bg-pink-500 text-slate-950 font-bold text-[10px] rounded hover:shadow-neon-pink transition">GAGAL</button>
+                        </div>
+                    ` : `<span class="text-[10px] text-slate-500 italic">Proses Selesai</span>`;
+
+                    const tr = document.createElement('tr');
+                    tr.className = "border-b border-cyan-500/5 hover:bg-slate-900/40 transition";
+                    tr.innerHTML = `
+                        <td class="py-3 px-4 font-mono font-bold text-cyan-400">${order.id}</td>
+                        <td class="py-3 px-4 text-slate-400">${order.username}</td>
+                        <td class="py-3 px-4 font-semibold text-slate-100">${order.game}</td>
+                        <td class="py-3 px-4 text-slate-300">${order.item}</td>
+                        <td class="py-3 px-4 font-mono text-slate-400">${targetAcc}</td>
+                        <td class="py-3 px-4 font-bold text-cyan-400">${formatRupiah(order.price)}</td>
+                        <td class="py-3 px-4">${statusBadge}</td>
+                        <td class="py-3 px-4">${actions}</td>
+                    `;
+                    table.appendChild(tr);
+                });
+            } else {
+                // RENDER MANAGE PRODUCT CATALOG (Price + Discount Settings)
+                const container = document.getElementById('adminGamesSettings');
+                container.innerHTML = '';
+                const games = getGames();
+
+                Object.values(games).forEach(game => {
+                    const block = document.createElement('div');
+                    block.className = "bg-slate-950 border border-slate-800 p-5 rounded-2xl space-y-4";
+                    
+                    let itemsHtml = '';
+                    game.items.forEach((item, index) => {
+                        itemsHtml += `
+                            <div class="space-y-1 bg-slate-900/60 p-2.5 rounded-lg border border-cyan-500/5">
+                                <span class="text-[9px] text-cyan-400 uppercase font-bold tracking-widest">Item ${index + 1}</span>
+                                <div class="grid grid-cols-12 gap-2 items-center">
+                                    <input type="text" value="${item.name}" onchange="updateItemName('${game.id}', ${index}, this.value)" class="col-span-5 px-2 py-1 bg-slate-950 border border-cyan-500/10 rounded text-xs" title="Nama Item">
+                                    <input type="number" value="${item.originalPrice || item.price}" onchange="updateItemOriginalPrice('${game.id}', ${index}, this.value)" class="col-span-3 px-2 py-1 bg-slate-950 border border-cyan-500/10 rounded text-xs font-mono text-slate-400" title="Harga Asli">
+                                    <input type="number" value="${item.price}" onchange="updateItemPrice('${game.id}', ${index}, this.value)" class="col-span-3 px-2 py-1 bg-slate-950 border border-cyan-500/10 rounded text-xs font-mono text-cyan-400" title="Harga Jual">
+                                    <button onclick="removeItemFromGame('${game.id}', ${index})" class="col-span-1 text-pink-500 hover:text-pink-400 text-xs"><i class="fa-solid fa-trash"></i></button>
+                                </div>
+                            </div>
+                        `;
+                    });
+
+                    block.innerHTML = `
+                        <div class="flex items-center justify-between border-b border-cyan-500/10 pb-3">
+                            <div class="flex items-center gap-3">
+                                <img src="${game.logo}" alt="" class="w-8 h-8 object-contain">
+                                <h4 class="font-orbitron font-bold text-sm text-cyan-400">${game.name}</h4>
+                            </div>
+                            <button onclick="addItemToGame('${game.id}')" class="px-2 py-1 rounded bg-cyan-950 text-cyan-400 border border-cyan-500/20 text-[10px] font-bold hover:bg-cyan-900 transition">
+                                + TAMBAH NOMINAL
+                            </button>
+                        </div>
+                        <div class="space-y-2">
+                            <div class="grid grid-cols-12 gap-2 text-[9px] text-slate-500 font-bold uppercase px-1">
+                                <span class="col-span-5">Nama Item</span>
+                                <span class="col-span-3">Harga Coret</span>
+                                <span class="col-span-3">Harga Jual</span>
+                                <span class="col-span-1"></span>
+                            </div>
+                            ${itemsHtml}
+                        </div>
+                    `;
+                    container.appendChild(block);
+                });
+            }
+        }
+
+        // ADD GAME ITEMS & DETAILED SETTINGS
+        function addItemToGame(gameId) {
+            const games = getGames();
+            if (games[gameId]) {
+                const newItem = {
+                    id: `${gameId}-${Math.floor(100 + Math.random() * 900)}`,
+                    name: "100 Diamonds baru",
+                    originalPrice: 30000,
+                    price: 25000
+                };
+                games[gameId].items.push(newItem);
+                saveGames(games);
+                showToast("Item Ditambahkan", "Nominal produk kosong baru berhasil disisipkan.", "success");
+                renderAdminDashboard();
+            }
+        }
+
+        function removeItemFromGame(gameId, index) {
+            const games = getGames();
+            if (games[gameId]) {
+                games[gameId].items.splice(index, 1);
+                saveGames(games);
+                showToast("Item Terhapus", "Item nominal berhasil dibuang.", "success");
+                renderAdminDashboard();
+            }
+        }
+
+        function changeOrderStatus(orderId, newStatus) {
+            const orders = getOrders();
+            const orderIndex = orders.findIndex(o => o.id === orderId);
+            if (orderIndex === -1) return;
+
+            orders[orderIndex].status = newStatus;
+            saveOrders(orders);
+            showToast("Invoice Diupdate", `Pesanan ${orderId} ditandai sebagai ${newStatus}.`, "success");
+            renderAdminDashboard();
+        }
+
+        function updateItemName(gameId, itemIndex, newName) {
+            const games = getGames();
+            if (games[gameId] && games[gameId].items[itemIndex]) {
+                games[gameId].items[itemIndex].name = newName;
+                saveGames(games);
+            }
+        }
+
+        function updateItemOriginalPrice(gameId, itemIndex, newOriginalPrice) {
+            const games = getGames();
+            if (games[gameId] && games[gameId].items[itemIndex]) {
+                games[gameId].items[itemIndex].originalPrice = parseInt(newOriginalPrice) || 0;
+                saveGames(games);
+                showToast("Diskon Terbaca", "Harga coret / diskon produk berhasil disesuaikan.", "success");
+            }
+        }
+
+        function updateItemPrice(gameId, itemIndex, newPrice) {
+            const games = getGames();
+            if (games[gameId] && games[gameId].items[itemIndex]) {
+                games[gameId].items[itemIndex].price = parseInt(newPrice) || 0;
+                saveGames(games);
+                showToast("Harga Jual Terbaca", "Harga jual berhasil diatur.", "success");
+            }
+        }
+
+        // ================= OWNER CONTROL PANEL (MANAGE BANNER ADVERTISEMENT & WEB SETTINGS) =================
+        function switchOwnerTab(tabName) {
+            activeOwnerTab = tabName;
+            const btnUsers = document.getElementById('btn-own-users');
+            const btnSettings = document.getElementById('btn-own-settings');
+            const contentUsers = document.getElementById('own-tab-users-content');
+            const contentSettings = document.getElementById('own-tab-settings-content');
+
+            btnUsers.className = "px-5 py-3 border-b-2 text-xs font-orbitron font-bold uppercase tracking-wider " + (tabName === 'users' ? 'border-cyan-400 text-cyan-400' : 'border-transparent text-slate-400');
+            btnSettings.className = "px-5 py-3 border-b-2 text-xs font-orbitron font-bold uppercase tracking-wider " + (tabName === 'settings' ? 'border-cyan-400 text-cyan-400' : 'border-transparent text-slate-400');
+
+            if (tabName === 'users') {
+                contentUsers.classList.remove('hidden');
+                contentSettings.classList.add('hidden');
+            } else {
+                contentUsers.classList.add('hidden');
+                contentSettings.classList.remove('hidden');
+            }
+            renderOwnerDashboard();
+        }
+
+        function renderOwnerDashboard() {
+            const orders = getOrders();
+            const users = getUsers();
+
+            const successOrders = orders.filter(o => o.status === 'Success');
+            const totalSalesSum = successOrders.reduce((sum, current) => sum + current.price, 0);
+
+            document.getElementById('statTotalSales').textContent = formatRupiah(totalSalesSum);
+            document.getElementById('statSuccessCount').textContent = successOrders.length;
+            document.getElementById('statUsersCount').textContent = users.length;
+
+            if (activeOwnerTab === 'users') {
+                const table = document.getElementById('ownerUsersTable');
+                table.innerHTML = '';
+
+                users.forEach(user => {
+                    let roleBadge = '';
+                    if (user.role === 'owner') {
+                        roleBadge = `<span class="px-2 py-0.5 rounded bg-amber-950 text-amber-400 border border-amber-500/30 text-[10px] font-bold">OWNER / CEO</span>`;
+                    } else if (user.role === 'admin') {
+                        roleBadge = `<span class="px-2 py-0.5 rounded bg-purple-950 text-purple-400 border border-purple-500/30 text-[10px] font-bold">STAFF ADMIN</span>`;
+                    } else {
+                        roleBadge = `<span class="px-2 py-0.5 rounded bg-cyan-950 text-cyan-400 border border-cyan-500/30 text-[10px] font-bold">MEMBER</span>`;
+                    }
+
+                    let toggleButtons = '';
+                    if (user.username !== currentUser.username) {
+                        if (user.role === 'admin') {
+                            toggleButtons = `
+                                <button onclick="changeUserRole('${user.username}', 'user')" class="px-3 py-1 bg-cyan-600 hover:bg-cyan-500 text-slate-950 text-[10px] font-black rounded transition">Turunkan Peran Member</button>
+                            `;
+                        } else if (user.role === 'user') {
+                            toggleButtons = `
+                                <button onclick="changeUserRole('${user.username}', 'admin')" class="px-3 py-1 bg-purple-600 hover:bg-purple-500 text-slate-950 text-[10px] font-black rounded transition">Naikkan Level Admin</button>
+                            `;
+                        }
+                    } else {
+                        toggleButtons = `<span class="text-xs text-slate-500 italic">Akun Owner</span>`;
+                    }
+
+                    const tr = document.createElement('tr');
+                    tr.className = "border-b border-cyan-500/5 hover:bg-slate-900/40 transition";
+                    tr.innerHTML = `
+                        <td class="py-3 px-4 font-bold text-slate-100">${user.name}</td>
+                        <td class="py-3 px-4 text-slate-400">${user.username}</td>
+                        <td class="py-3 px-4 font-mono text-slate-400">${user.email || "-"}</td>
+                        <td class="py-3 px-4 font-mono text-slate-500">${user.password}</td>
+                        <td class="py-3 px-4">${roleBadge}</td>
+                        <td class="py-3 px-4 text-center">${toggleButtons}</td>
+                    `;
+                    table.appendChild(tr);
+                });
+            } else {
+                const set = getSettings();
+                document.getElementById('ownerSetWaNumber').value = set.whatsappNumber;
+                document.getElementById('ownerSetPromoTitle').value = set.promoTitle;
+
+                // Render Dynamic Promo Ad Banners in Table
+                const bannersTable = document.getElementById('ownerBannersTable');
+                bannersTable.innerHTML = '';
+                const banners = getBanners();
+
+                banners.forEach((banner, index) => {
+                    const tr = document.createElement('tr');
+                    tr.className = "border-b border-cyan-500/5 hover:bg-slate-900/40 transition";
+                    tr.innerHTML = `
+                        <td class="py-3 px-4">
+                            <img src="${banner.src}" class="w-20 h-12 object-cover rounded-lg border border-cyan-500/20" onerror="this.src='https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=100&q=80'">
+                        </td>
+                        <td class="py-3 px-4 font-bold text-slate-200">${banner.title}</td>
+                        <td class="py-3 px-4 text-slate-400 max-w-xs truncate">${banner.desc}</td>
+                        <td class="py-3 px-4 text-center">
+                            <button onclick="removePromoBanner(${index})" class="px-2.5 py-1.5 bg-pink-950/40 border border-pink-500/30 text-pink-500 hover:bg-pink-900/60 transition rounded">Hapus Slide</button>
+                        </td>
+                    `;
+                    bannersTable.appendChild(tr);
+                });
+            }
+        }
+
+        function changeUserRole(username, newRole) {
+            const users = getUsers();
+            const index = users.findIndex(u => u.username === username);
+            if (index === -1) return;
+
+            users[index].role = newRole;
+            saveUsers(users);
+            showToast("Akses Diganti", `Peran ${username} sekarang adalah ${newRole}.`, "success");
+            renderOwnerDashboard();
+        }
+
+        // ADD NEW GAME (PRODUCT ADDER MODAL)
+        function openAddGameModal() {
+            document.getElementById('gameModal').classList.remove('hidden');
+            document.getElementById('gameModal').classList.add('flex');
+            
+            // Reset input values
+            document.getElementById('addGameId').value = "";
+            document.getElementById('addGameName').value = "";
+            document.getElementById('addGameDeveloper').value = "";
+            document.getElementById('addGamePlaceholder').value = "";
+            document.getElementById('addGameLogo').value = "";
+            document.getElementById('addGameBanner').value = "";
+            document.getElementById('addGameHasZone').checked = false;
+            document.getElementById('addGameZoneContainer').classList.add('hidden');
+            document.getElementById('addGameZonePlaceholder').value = "";
+        }
+
+        function closeGameModal() {
+            document.getElementById('gameModal').classList.add('hidden');
+            document.getElementById('gameModal').classList.remove('flex');
+        }
+
+        function toggleAddGameZoneField() {
+            const check = document.getElementById('addGameHasZone').checked;
+            const container = document.getElementById('addGameZoneContainer');
+            if (check) {
+                container.classList.remove('hidden');
+            } else {
+                container.classList.add('hidden');
+            }
+        }
+
+        function saveNewGame() {
+            const id = document.getElementById('addGameId').value.trim().toLowerCase();
+            const name = document.getElementById('addGameName').value.trim();
+            const developer = document.getElementById('addGameDeveloper').value.trim();
+            const idPlaceholder = document.getElementById('addGamePlaceholder').value.trim();
+            let logo = document.getElementById('addGameLogo').value.trim();
+            let banner = document.getElementById('addGameBanner').value.trim();
+            const hasZone = document.getElementById('addGameHasZone').checked;
+            const zonePlaceholder = document.getElementById('addGameZonePlaceholder').value.trim();
+
+            if (!id || !name || !developer || !idPlaceholder) {
+                showToast("Lengkapi Form", "Semua rincian identitas produk wajib dilengkapi.", "error");
+                return;
+            }
+
+            const games = getGames();
+            if (games[id]) {
+                showToast("Produk Ada", "ID game ini sudah terdaftar sebelumnya.", "error");
+                return;
+            }
+
+            if (!logo) logo = "https://img.icons8.com/color/144/game-controller.png";
+            if (!banner) banner = "https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=800&q=80";
+
+            const newGameObj = {
+                id: id,
+                name: name,
+                developer: developer,
+                banner: banner,
+                logo: logo,
+                idPlaceholder: idPlaceholder,
+                hasZone: hasZone,
+                zonePlaceholder: zonePlaceholder || "Server/Zona ID",
+                items: [
+                    { id: `${id}-starter`, name: "Seksi Diamond Starter", originalPrice: 15000, price: 10000 }
+                ]
+            };
+
+            games[id] = newGameObj;
+            saveGames(games);
+
+            renderGamesList();
+            closeGameModal();
+            showToast("Game Ditambahkan", `Game ${name} berhasil didaftarkan di YanzStore!`, "success");
+
+            // Refresh dashboards if active
+            if (currentUser && (currentUser.role === 'admin' || currentUser.role === 'owner')) {
+                renderAdminDashboard();
+            }
+        }
+
+        // PROMO BANNER AD MANAGEMENT
+        function openAddBannerModal() {
+            document.getElementById('bannerModal').classList.remove('hidden');
+            document.getElementById('bannerModal').classList.add('flex');
+            document.getElementById('addBannerTitle').value = "";
+            document.getElementById('addBannerDesc').value = "";
+            document.getElementById('addBannerImg').value = "";
+        }
+
+        function closeBannerModal() {
+            document.getElementById('bannerModal').classList.add('hidden');
+            document.getElementById('bannerModal').classList.remove('flex');
+        }
+
+        function saveNewPromoBanner() {
+            const title = document.getElementById('addBannerTitle').value.trim();
+            const desc = document.getElementById('addBannerDesc').value.trim();
+            const src = document.getElementById('addBannerImg').value.trim();
+
+            if (!title || !desc || !src) {
+                showToast("Peringatan", "Semua kolom iklan promo wajib diisi.", "error");
+                return;
+            }
+
+            const banners = getBanners();
+            const newBanner = {
+                id: "ban-" + Math.floor(Math.random() * 100000),
+                src: src,
+                title: title,
+                desc: desc
+            };
+
+            banners.push(newBanner);
+            saveBanners(banners);
+
+            closeBannerModal();
+            setupPromoBannerCarousel();
+            renderOwnerDashboard();
+            showToast("Promo Disimpan", "Banner promosi iklan berhasil diletakkan.", "success");
+        }
+
+        function removePromoBanner(index) {
+            const banners = getBanners();
+            banners.splice(index, 1);
+            saveBanners(banners);
+            setupPromoBannerCarousel();
+            renderOwnerDashboard();
+            showToast("Iklan Dihapus", "Slide banner berhasil dihapus.", "success");
+        }
+
+        // SAVE GENERAL WEB SETTINGS
+        function saveOwnerSettings() {
+            const waNum = document.getElementById('ownerSetWaNumber').value.trim();
+            const headline = document.getElementById('ownerSetPromoTitle').value.trim();
+
+            if (!waNum) {
+                showToast("Eror", "No WhatsApp Admin wajib diisi.", "error");
+                return;
+            }
+
+            const set = {
+                whatsappNumber: waNum,
+                promoTitle: headline || "Spesial Promo YanzStore"
+            };
+
+            saveSettings(set);
+            updateHeadlineText();
+            showToast("Web Portal Disimpan", "Seluruh seting data konfigurasi YanzStore sukses diperbarui.", "success");
+        }
+
+        // ================= CONFIRMATION MODAL =================
+        function showModal(title, msg, type, redirectUrl = null) {
+            const modal = document.getElementById('customModal');
+            const iconContainer = document.getElementById('modalIconContainer');
+            const mTitle = document.getElementById('modalTitle');
+            const mMsg = document.getElementById('modalMessage');
+
+            mTitle.textContent = title;
+            mMsg.textContent = msg;
+
+            if (type === "success") {
+                iconContainer.className = "w-14 h-14 rounded-full mx-auto flex items-center justify-center text-2xl bg-cyan-950 border border-cyan-400 text-cyan-400 shadow-neon-blue";
+                iconContainer.innerHTML = '<i class="fa-solid fa-circle-check animate-pulse"></i>';
+            } else {
+                iconContainer.className = "w-14 h-14 rounded-full mx-auto flex items-center justify-center text-2xl bg-pink-950 border border-pink-500 text-pink-500 shadow-neon-pink";
+                iconContainer.innerHTML = '<i class="fa-solid fa-circle-exclamation"></i>';
+            }
+
+            const buttonContainer = document.getElementById('modalButtonContainer');
+            buttonContainer.innerHTML = '';
+
+            if (redirectUrl) {
+                const btnClose = document.createElement('button');
+                btnClose.onclick = closeModal;
+                btnClose.className = "px-4 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-400 font-bold font-orbitron text-[10px] tracking-wider transition duration-300";
+                btnClose.textContent = "BATAL";
+
+                const btnOk = document.createElement('a');
+                btnOk.href = redirectUrl;
+                btnOk.target = "_blank";
+                btnOk.onclick = closeModal;
+                btnOk.className = "flex-grow py-3 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-black font-orbitron text-[10px] tracking-wider transition duration-300 shadow-neon-blue text-center flex items-center justify-center gap-1";
+                btnOk.innerHTML = '<i class="fa-brands fa-whatsapp text-sm"></i> LANJUT KE WA';
+
+                buttonContainer.appendChild(btnClose);
+                buttonContainer.appendChild(btnOk);
+            } else {
+                const btnOk = document.createElement('button');
+                btnOk.onclick = closeModal;
+                btnOk.className = "flex-grow py-3 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-black font-orbitron text-xs tracking-wider transition duration-300 shadow-neon-blue";
+                btnOk.textContent = "MENGERTI";
+                buttonContainer.appendChild(btnOk);
+            }
+
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('customModal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+    </script>
+</body>
+</html>
+
+```
